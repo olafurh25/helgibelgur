@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="is">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Helgi Snær | Teikningar</title>
+  <meta name="description" content="Lýsing á innihaldi" />
+  <link rel="stylesheet" href="h_style.css" />
+</head>
+<body>
+  <a id="top"></a>
+  <a class="skip" href="#main">Fara beint í efni</a>
+
+  <!-- HEADER -->
+  <header class="header" aria-label="Haus">
+    <div class="wrap row spread">
+      <a href="#top" class="logo-placeholder" aria-label="Upphafssíða" style="display:flex;align-items:center;text-decoration:none;">
+        <span style="display:inline-block;width:38px;height:38px;background:#eee;border-radius:50%;margin-right:14px;text-align:center;line-height:38px;font-weight:bold;font-size:1.3rem;color:#888;">LOGO</span>
+      </a>
+      <div class="brand">HELGI SNÆR SIGURÐSSON</div>
+      <button class="hamburger" id="hamburger" aria-label="Opna valmynd" aria-expanded="false">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <nav class="nav" id="nav" aria-label="Aðalvalmynd">
+        <a href="#synishorn">Sýnishorn</a>
+        <a href="#hafa-samband">Hafa samband</a>
+        <a href="#spurt-og-svarad">Spurt og svarað</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- MAIN SNAP CONTAINER -->
+  <main id="main" class="snap-container">
+
+    <!-- HERO (PARALLAX) -->
+    <section class="hero-parallax snap-section" aria-label="Hero">
+      <div class="hero-bg" aria-hidden="true">
+        <!-- TODO: replace this image URL with your own -->
+        <img src="images/bannerimage.jpg" alt="" loading="eager" />
+        <div class="hero-overlay"></div>
+      </div>
+
+      <div class="wrap hero-content">
+        <h1 class="xxl tight">HELGI SNÆR SIGURÐSSON</h1>
+        <p class="lead hero-sub">Útskrift úr skóla, afmæli eða  ástarjátning, tilefnin geta verið af ýmsu tagi þegar kemur að skopmyndum.</p>
+        <p class="lead hero-sub">Ég hef áratugareynslu í teikningu slíkra mynda, gerði þær fyrstu þegar ég sjálfur útskrifaðist úr menntaskóla fyrir (rosalega)  mörgum árum. </p>
+
+        <div class="row gap-sm">
+          <a class="btn primary" href="#hafa-samband">Hafa samband</a>
+          <a class="btn ghost" href="#synishorn">Sýnishorn</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- SÝNISHORN -->
+    <section id="synishorn" class="section snap-section">
+      <div class="wrap">
+        <div class="row spread align-end">
+          <h2 class="xl">Sýnishorn</h2>
+          <a class="link" href="#hafa-samband">Hafa samband →</a>
+        </div>
+
+        <div class="gallery">
+          <!-- TODO: replace these sample images -->
+          <figure class="card">
+            <img src="images/1.jpg" alt="Titill/lýsing á mynd" loading="lazy">
+            <figcaption>„Umsögn/Lýsing.” — <strong>Nafn</strong></figcaption>
+          </figure>
+          <figure class="card">
+            <img src="images/2.jpg" alt="Titill/lýsing á mynd" loading="lazy">
+            <figcaption>„Umsögn/Lýsing.” — <strong>Nafn</strong></figcaption>
+          </figure>
+          <figure class="card">
+            <img src="images/3.jpg" alt="Titill/lýsing á mynd" loading="lazy">
+            <figcaption>„Umsögn/Lýsing.” — <strong>Nafn</strong></figcaption>
+          </figure>
+          <figure class="card">
+            <img src="images/4.jpg" alt="Titill/lýsing á mynd" loading="lazy">
+            <figcaption>„Umsögn/Lýsing.” — <strong>Nafn</strong></figcaption>
+          </figure>
+          <figure class="card">
+            <img src="images/5.jpg" alt="Titill/lýsing á mynd" loading="lazy">
+            <figcaption>„Umsögn/Lýsing.” — <strong>Nafn</strong></figcaption>
+          </figure>
+          <figure class="card">
+            <img src="images/6.jpg" alt="Titill/lýsing á mynd" loading="lazy">
+            <figcaption>„Umsögn/Lýsing.” — <strong>Nafn</strong></figcaption>
+          </figure>
+          <figure class="card">
+            <img src="images/7.jpg" alt="Titill/lýsing á mynd" loading="lazy">
+            <figcaption>„Umsögn/Lýsing.” — <strong>Nafn</strong></figcaption>
+          </figure>
+          <figure class="card">
+            <img src="images/8.jpg" alt="Titill/lýsing á mynd" loading="lazy">
+            <figcaption>„Umsögn/Lýsing.” — <strong>Nafn</strong></figcaption>
+          </figure>
+          <figure class="card">
+            <img src="images/9.jpg" alt="Titill/lýsing á mynd" loading="lazy">
+            <figcaption>„Umsögn/Lýsing.” — <strong>Nafn</strong></figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- HAFA SAMBAND (Pricing + Form) -->
+    <section id="hafa-samband" class="section surface snap-section">
+      <div class="wrap grid-2">
+        <aside class="panel">
+          <h2 class="xl">Verðskrá</h2>
+          <p class="muted">Undirtexti.</p>
+          <div class="tier-list" id="tierList"></div>
+
+          <div class="calc">
+            <label for="qty" class="label">Magn</label>
+            <div class="qty">
+              <button class="step" data-step="-1" aria-label="Minnka magn">−</button>
+              <input id="qty" type="number" min="0" value="1" inputmode="numeric" />
+              <button class="step" data-step="1" aria-label="Auka magn">+</button>
+            </div>
+
+            <div class="totals">
+              <div class="row spread">
+                <span class="muted">Verð á teikningu</span>
+                <strong id="unitPrice">—</strong>
+              </div>
+              <div class="row spread">
+                <span class="muted">Samtals</span>
+                <strong id="subtotal">—</strong>
+              </div>
+              <p class="note small">Upplýsingar um hvert á að sækja.</p>
+            </div>
+          </div>
+        </aside>
+
+        <!-- FORM -->
+        <div class="panel">
+          <h2 class="xl">Hafa samband - pantanir</h2>
+          <p class="muted">Sendu myndir og upplýsingar — ég reyni að svara innan 48 klst.</p>
+          <p class="muted small">Eða sendu beint á <a href="mailto:helgibelgur@gmail.com" class="link">helgibelgur@gmail.com</a></p>
+
+          <form id="orderForm" action="https://formspree.io/f/xanvvrzd" method="POST" enctype="multipart/form-data" novalidate>
+            <input type="hidden" name="service" value="Faunu teikning">
+            <input type="hidden" name="einingarverd" id="unitPriceField">
+            <input type="hidden" name="samtalsverd" id="subtotalField">
+            <input type="hidden" name="dagsetning" id="dateField">
+
+            <div class="field">
+              <label for="name">Nafn *</label>
+              <input id="name" name="name" required placeholder="Jóna Jónsdóttir">
+              <span class="error" data-for="name"></span>
+            </div>
+
+            <div class="grid-2">
+              <div class="field">
+                <label for="email">Netfang *</label>
+                <input id="email" name="email" type="email" required placeholder="jonjonson@internet.is">
+                <span class="error" data-for="email"></span>
+              </div>
+                <div class="field">
+                  <label for="phone">Símanúmer *</label>
+                  <input id="phone" name="phone" type="tel" pattern="[0-9]{7,15}" placeholder="t.d. 8991234">
+                  <span class="error" data-for="phone" style="display:none;">Vinsamlegast sláðu inn gilt símanúmer.</span>
+                </div>
+            </div>
+
+            <div class="field">
+              <label for="quantity">Magn (tengt reikni)</label>
+              <input id="quantity" name="quantity" type="number" min="0" value="1">
+            </div>
+
+            <div class="field">
+              <label for="photos">Viðmiðsmyndir</label>
+              <input id="photos" name="photos" type="file" accept="image/*" multiple>
+              <p class="help">Björt, skýr mynd hjálpar. Má senda fleiri en eina.</p>
+            </div>
+
+            <div class="field">
+              <label for="notes">Athugasemdir</label>
+              <textarea id="notes" name="notes" rows="4" placeholder="Lýsing á verkefni"></textarea>
+            </div>
+
+            <input class="hp" type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true">
+
+            <button class="btn primary" type="submit">Senda</button>
+            <p class="small muted">Fæst svar innan 48 klst.</p>
+            <div id="formStatus" role="status" aria-live="polite" class="status" hidden></div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- SPURT OG SVARAÐ -->
+    <section id="spurt-og-svarad" class="section snap-section">
+      <div class="wrap narrow">
+        <h2 class="xl">Spurt og svarað</h2>
+
+        <details class="faq">
+          <summary>Í hvaða stærð eru myndirnar?</summary>
+          <p>A3...</p>
+        </details>
+
+        <details class="faq">
+          <summary>Hvað tekur langan tíma að teikna hverja mynd?</summary>
+          <p>Yfirleitt tekur það um...</p>
+        </details>
+
+        <details class="faq">
+          <summary>Er hægt að fá myndirnar í lit?</summary>
+          <p>Það fer eftir...</p>
+        </details>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="wrap row spread">
+      <p class="small muted">© <span id="year"></span> Helgi Snær Skagfjörð Sigurðsson</p>
+      <nav class="row gap-sm">
+        <a href="https://www.facebook.com/helgi.s.sigurdsson" target="_blank">Facebook</a>
+        <a href="mailto:helgibelgur@gmail.com">Netfang</a>
+      </nav>
+    </div>
+  </footer>
+
+  <div id="img-modal" class="img-modal" tabindex="-1" aria-modal="true" style="display:none">
+    <div class="img-modal-bg"></div>
+    <div class="img-modal-content">
+      <img id="img-modal-img" src="" alt="Stækkuð mynd" />
+      <button class="img-modal-close" aria-label="Loka">×</button>
+    </div>
+  </div>
+
+  <script src="h_app.js" defer></script>
+</body>
+</html>
