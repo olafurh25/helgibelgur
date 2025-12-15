@@ -1,0 +1,68 @@
+1. General Text for Website
+Texti sem kemur fram á vefsíðunni
+
+Hero Title
+HELGI SNÆR SIGURÐSSON
+
+Hero Description 1
+Útskrift úr skóla, afmæli eða  ástarjátning, tilefnin geta verið af ýmsu tagi þegar kemur að skopmyndum.
+
+Hero Description 2
+Ég hef áratugareynslu í teikningu slíkra mynda, gerði þær fyrstu þegar ég sjálfur útskrifaðist úr menntaskóla fyrir (rosalega)  mörgum árum.
+
+Gallery Section Title
+Sýnishorn
+
+Contact Section Title
+Hafa samband - pantanir
+
+Contact Info Text
+Sendu myndir og upplýsingar — ég reyni að svara innan tveggja sólahringa.
+
+FAQ Title
+Spurt og svarað
+
+2. Price List (Editable) JS
+Verðskrá, ekki skrifa kr.
+
+Quantity (minimum)	Price per drawing (kr.)
+1			25000
+5			23000
+10			21000
+20			20000
+
+3. Sample Image Descriptions (Editable)
+Undirtexti við hverja mynd
+1. „Líklegastur til að týnast á skipi” — Nafn
+2. Líklegust til að flytja til Darmstadt.” — Nafn
+3. „Umsögn/Lýsing.” — Nafn
+4. „Umsögn/Lýsing.” — Nafn
+5. „Umsögn/Lýsing.” — Nafn
+6. „Umsögn/Lýsing.” — Nafn
+7. „Umsögn/Lýsing.” — Nafn
+8. „Umsögn/Lýsing.” — Nafn
+9. „Umsögn/Lýsing.” — Nafn
+
+4. FAQ (Questions & Answers)
+Þú getur bætt við eins mörgum spurningum og þú vilt
+
+Spurning
+Í hvaða stærð eru myndirnar?
+Svar
+A3...
+
+Spurning
+Hvað tekur langan tíma að teikna hverja mynd?
+Svar
+Yfirleitt tekur það um...
+
+Spurning
+Er hægt að fá myndirnar í lit?
+Svar
+Það fer eftir...
+
+Spurning
+Er þetta spurning?
+Svar
+A3...
+

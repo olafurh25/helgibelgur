@@ -15,8 +15,8 @@
   <!-- HEADER -->
   <header class="header" aria-label="Haus">
     <div class="wrap row spread">
-      <a href="#top" class="logo-placeholder" aria-label="Upphafssíða" style="display:flex;align-items:center;text-decoration:none;">
-        <img src="froskur.svg" alt="Logo" style="width:48px;height:48px;display:inline-block;margin-right:14px;vertical-align:middle;" />
+      <a href="#top" class="logo-placeholder" aria-label="Forsíða" style="display:flex;align-items:center;text-decoration:none;">
+        <img src="icons/froskur.svg" alt="Logo" style="width:48px;height:48px;display:inline-block;margin-right:14px;vertical-align:middle;" />
       </a>
       <a href="#top" class="brand" style="text-decoration:none;color:inherit;cursor:pointer;user-select:none;outline:none;" tabindex="-1">HELGI SNÆR SIGURÐSSON</a>
       <button class="hamburger" id="hamburger" aria-label="Opna valmynd" aria-expanded="false">
@@ -28,7 +28,23 @@
         <a href="#synishorn">Sýnishorn</a>
         <a href="#hafa-samband">Hafa samband</a>
         <a href="#spurt-og-svarad">Spurt og svarað</a>
+        <span class="nav-socials-mobile">
+          <a href="https://facebook.com/helgi.s.sigurdsson" target="_blank" aria-label="Facebook" style="display:inline-flex;align-items:center;margin-right:8px;">
+            <img src="icons/facebook.svg" alt="Facebook" width="24" height="24" style="display:inline-block;vertical-align:middle;" />
+          </a>
+          <a href="https://instagram.com/helgibelgur" target="_blank" aria-label="Instagram" style="display:inline-flex;align-items:center;">
+            <img src="icons/instagram.svg" alt="Instagram" width="24" height="24" style="display:inline-block;vertical-align:middle;" />
+          </a>
+        </span>
       </nav>
+      <span class="nav-socials-desktop">
+        <a href="https://facebook.com/helgi.s.sigurdsson" target="_blank" aria-label="Facebook" style="display:inline-flex;align-items:center;margin-right:8px;">
+          <img src="icons/facebook.svg" alt="Facebook" width="24" height="24" style="display:inline-block;vertical-align:middle;" />
+        </a>
+        <a href="https://instagram.com/helgibelgur" target="_blank" aria-label="Instagram" style="display:inline-flex;align-items:center;">
+          <img src="icons/instagram.svg" alt="Instagram" width="24" height="24" style="display:inline-block;vertical-align:middle;" />
+        </a>
+      </span>
     </div>
   </header>
 
@@ -47,7 +63,8 @@
         <h1 class="xxl tight">HELGI SNÆR SIGURÐSSON</h1>
         <p class="lead hero-sub">Útskrift úr skóla, afmæli eða  ástarjátning, tilefnin geta verið af ýmsu tagi þegar kemur að skopmyndum.</p>
         <p class="lead hero-sub">Ég hef áratugareynslu í teikningu slíkra mynda, gerði þær fyrstu þegar ég sjálfur útskrifaðist úr menntaskóla fyrir (rosalega)  mörgum árum. </p>
-
+      </div>
+      <div class="wrap hero-buttons">
         <div class="row gap-sm">
           <a class="btn primary" href="#hafa-samband">Hafa samband</a>
           <a class="btn ghost" href="#synishorn">Sýnishorn</a>
@@ -67,39 +84,39 @@
           <!-- TODO: replace these sample images -->
           <figure class="card">
             <img src="images/1.jpg" alt="Titill/lýsing á mynd" loading="lazy">
-            <figcaption>„Umsögn/Lýsing.” — <strong>Nafn</strong></figcaption>
+            <figcaption></figcaption>
           </figure>
           <figure class="card">
             <img src="images/2.jpg" alt="Titill/lýsing á mynd" loading="lazy">
-            <figcaption>„Umsögn/Lýsing.” — <strong>Nafn</strong></figcaption>
+            <figcaption></figcaption>
           </figure>
           <figure class="card">
             <img src="images/3.jpg" alt="Titill/lýsing á mynd" loading="lazy">
-            <figcaption>„Umsögn/Lýsing.” — <strong>Nafn</strong></figcaption>
+            <figcaption></figcaption>
           </figure>
           <figure class="card">
             <img src="images/4.jpg" alt="Titill/lýsing á mynd" loading="lazy">
-            <figcaption>„Umsögn/Lýsing.” — <strong>Nafn</strong></figcaption>
+            <figcaption></figcaption>
           </figure>
           <figure class="card">
             <img src="images/5.jpg" alt="Titill/lýsing á mynd" loading="lazy">
-            <figcaption>„Umsögn/Lýsing.” — <strong>Nafn</strong></figcaption>
+            <figcaption></figcaption>
           </figure>
           <figure class="card">
             <img src="images/6.jpg" alt="Titill/lýsing á mynd" loading="lazy">
-            <figcaption>„Umsögn/Lýsing.” — <strong>Nafn</strong></figcaption>
+            <figcaption></figcaption>
           </figure>
           <figure class="card">
             <img src="images/7.jpg" alt="Titill/lýsing á mynd" loading="lazy">
-            <figcaption>„Umsögn/Lýsing.” — <strong>Nafn</strong></figcaption>
+            <figcaption></figcaption>
           </figure>
           <figure class="card">
             <img src="images/8.jpg" alt="Titill/lýsing á mynd" loading="lazy">
-            <figcaption>„Umsögn/Lýsing.” — <strong>Nafn</strong></figcaption>
+            <figcaption></figcaption>
           </figure>
           <figure class="card">
             <img src="images/9.jpg" alt="Titill/lýsing á mynd" loading="lazy">
-            <figcaption>„Umsögn/Lýsing.” — <strong>Nafn</strong></figcaption>
+            <figcaption></figcaption>
           </figure>
         </div>
       </div>
@@ -156,7 +173,7 @@
             <div class="grid-2">
               <div class="field">
                 <label for="email">Netfang *</label>
-                <input id="email" name="email" type="email" required placeholder="jonjonson@internet.is">
+                <input id="email" name="email" type="email" required placeholder="jonajonsdottir@internet.is">
                 <span class="error" data-for="email"></span>
               </div>
                 <div class="field">
@@ -174,6 +191,7 @@
             <div class="field">
               <label for="photos">Viðmiðsmyndir</label>
               <input id="photos" name="photos" type="file" accept="image/*" multiple>
+              <div id="photoPreview" class="photo-preview" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;"></div>
               <p class="help">Björt, skýr mynd hjálpar. Má senda fleiri en eina.</p>
             </div>
 
