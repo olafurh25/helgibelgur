@@ -28,6 +28,7 @@
         <a href="#synishorn">Sýnishorn</a>
         <a href="#hafa-samband">Hafa samband</a>
         <a href="#spurt-og-svarad">Spurt og svarað</a>
+        <a href="#about-helgi">Um mig</a>
         <span class="nav-socials-mobile">
           <a href="https://facebook.com/helgi.s.sigurdsson" target="_blank" aria-label="Facebook" style="display:inline-flex;align-items:center;margin-right:8px;">
             <img src="icons/facebook.svg" alt="Facebook" width="24" height="24" style="display:inline-block;vertical-align:middle;" />
@@ -52,22 +53,26 @@
   <main id="main" class="snap-container">
 
     <!-- HERO (PARALLAX) -->
-    <section class="hero-parallax snap-section" aria-label="Hero">
+    <section id="hero" class="hero-parallax snap-section" aria-label="Hero">
       <div class="hero-bg" aria-hidden="true">
         <!-- TODO: replace this image URL with your own -->
-        <img src="images/bannerimage.jpg" alt="" loading="eager" />
+        <img src="images/hero.png" alt="" loading="eager" />
         <div class="hero-overlay"></div>
       </div>
 
       <div class="wrap hero-content">
         <h1 class="xxl tight">HELGI SNÆR SIGURÐSSON</h1>
-        <p class="lead hero-sub">Útskrift úr skóla, afmæli eða  ástarjátning, tilefnin geta verið af ýmsu tagi þegar kemur að skopmyndum.</p>
-        <p class="lead hero-sub">Ég hef áratugareynslu í teikningu slíkra mynda, gerði þær fyrstu þegar ég sjálfur útskrifaðist úr menntaskóla fyrir (rosalega)  mörgum árum. </p>
+        <p class="lead hero-sub">Útskrift úr skóla, afmæli eða ástarjátning? Skopmynd er góð gjöf, hvert sem tilefnið er.</p>
+        <p class="lead hero-sub">Ég hef áratugareynslu í því að teikna skopmyndir og gerði þær fyrstu þegar ég sjálfur útskrifaðist úr menntaskóla fyrir rúmum 30 árum. Bæði hef ég teiknað nemendur fyrir útskrift en líka fólk á öllum aldri af öðrum tilefnum og má af slíkum nefna afmæli eða brúðkaup. Hér á síðunni má sjá nokkur dæmi um skopmyndir ásamt upplýsingum um hvernig hafa má samband við mig og/eða panta teikningar. 
+ </p>
+        <div class="hero-quicknav row gap-sm" style="margin-top:18px;">
+          <a class="btn ghost" href="#about-helgi">Nánar um mig</a>
+          <a class="btn ghost" href="#synishorn">Sýnishorn</a>
+        </div>
       </div>
       <div class="wrap hero-buttons">
         <div class="row gap-sm">
           <a class="btn primary" href="#hafa-samband">Hafa samband</a>
-          <a class="btn ghost" href="#synishorn">Sýnishorn</a>
         </div>
       </div>
     </section>
@@ -83,40 +88,31 @@
         <div class="gallery">
           <!-- TODO: replace these sample images -->
           <figure class="card">
-            <img src="images/1.jpg" alt="Titill/lýsing á mynd" loading="lazy">
-            <figcaption></figcaption>
+            <img src="images/1.jpg" alt="Útskriftarmynd" loading="lazy">
           </figure>
           <figure class="card">
-            <img src="images/2.jpg" alt="Titill/lýsing á mynd" loading="lazy">
-            <figcaption></figcaption>
+            <img src="images/2.jpg" alt="Útskriftarmynd" loading="lazy">
           </figure>
           <figure class="card">
-            <img src="images/3.jpg" alt="Titill/lýsing á mynd" loading="lazy">
-            <figcaption></figcaption>
+            <img src="images/3.jpg" alt="Útskriftarmynd" loading="lazy">
           </figure>
           <figure class="card">
-            <img src="images/4.jpg" alt="Titill/lýsing á mynd" loading="lazy">
-            <figcaption></figcaption>
+            <img src="images/4.jpg" alt="Útskriftarmynd" loading="lazy">
           </figure>
           <figure class="card">
-            <img src="images/5.jpg" alt="Titill/lýsing á mynd" loading="lazy">
-            <figcaption></figcaption>
+            <img src="images/5.jpg" alt="Útskriftarmynd" loading="lazy">
           </figure>
           <figure class="card">
-            <img src="images/6.jpg" alt="Titill/lýsing á mynd" loading="lazy">
-            <figcaption></figcaption>
+            <img src="images/6.jpg" alt="Útskriftarmynd" loading="lazy">
           </figure>
           <figure class="card">
-            <img src="images/7.jpg" alt="Titill/lýsing á mynd" loading="lazy">
-            <figcaption></figcaption>
+            <img src="images/7.jpg" alt="Útskriftarmynd" loading="lazy">
           </figure>
           <figure class="card">
-            <img src="images/8.jpg" alt="Titill/lýsing á mynd" loading="lazy">
-            <figcaption></figcaption>
+            <img src="images/8.jpg" alt="Útskriftarmynd" loading="lazy">
           </figure>
           <figure class="card">
-            <img src="images/9.jpg" alt="Titill/lýsing á mynd" loading="lazy">
-            <figcaption></figcaption>
+            <img src="images/9.jpg" alt="Útskriftarmynd" loading="lazy">
           </figure>
         </div>
       </div>
@@ -155,7 +151,7 @@
         <!-- FORM -->
         <div class="panel">
           <h2 class="xl">Hafa samband - pantanir</h2>
-          <p class="muted">Sendu myndir og upplýsingar — ég reyni að svara innan 48 klst.</p>
+          <p class="muted">Sendu myndir og upplýsingar, ég reyni að svara innan tveggja sólahringa.</p>
           <p class="muted small">Eða sendu beint á <a href="mailto:helgibelgur@gmail.com" class="link">helgibelgur@gmail.com</a></p>
 
           <form id="orderForm" action="https://formspree.io/f/xanvvrzd" method="POST" enctype="multipart/form-data" novalidate>
@@ -178,7 +174,7 @@
               </div>
                 <div class="field">
                   <label for="phone">Símanúmer *</label>
-                  <input id="phone" name="phone" type="tel" pattern="[0-9]{7,15}" placeholder="t.d. 8991234">
+                  <input id="phone" name="phone" type="tel" pattern="[0-9]{7,15}" placeholder="1234567">
                   <span class="error" data-for="phone" style="display:none;">Vinsamlegast sláðu inn gilt símanúmer.</span>
                 </div>
             </div>
@@ -192,7 +188,7 @@
               <label for="photos">Viðmiðsmyndir</label>
               <input id="photos" name="photos" type="file" accept="image/*" multiple>
               <div id="photoPreview" class="photo-preview" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;"></div>
-              <p class="help">Björt, skýr mynd hjálpar. Má senda fleiri en eina.</p>
+              <p class="help">Björt, skýr mynd hjálpar. Það má senda fleiri en eina.</p>
             </div>
 
             <div class="field">
@@ -234,6 +230,19 @@
     </section>
 
   </main>
+
+  <!-- ABOUT SECTION -->
+  <section id="about-helgi" class="section surface snap-section">
+    <div class="wrap narrow about-helgi-flex">
+      <div class="about-helgi-text">
+        <h2 class="xl">Um mig</h2>
+        <p class="lead">Efnisgrein 1</p>
+      </div>
+      <div class="about-helgi-img">
+        <img src="images/me_recolor.jpg" alt="Mynd af Helga" class="portrait-img" />
+      </div>
+    </div>
+  </section>
 
   <!-- FOOTER -->
   <footer class="footer">

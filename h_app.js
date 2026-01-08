@@ -5,40 +5,33 @@
 ========================= */
 const CURRENCY = "kr."; // shown after the number (e.g. 25.000 kr.)
 
-const FALLBACK_CONTENT = {
+// Content for the site
+const SITE_TEXT = {
   hero: {
-    title: "HELGI SNÆR SIGURÐSSON",
+    title: "Helgi Snær Sigurðsson",
     descriptions: [
-      "Útskrift úr skóla, afmæli eða ástarjátning, tilefnin geta verið af ýmsu tagi þegar kemur að skopmyndum.",
-      "Ég hef áratugareynslu í teikningu slíkra mynda, gerði þær fyrstu þegar ég sjálfur útskrifaðist úr menntaskóla fyrir (rosalega) mörgum árum.",
+      "Útskrift úr skóla, afmæli eða ástarjátning? Skopmynd er góð gjöf, hvert sem tilefnið er.",
+      "Ég hef áratugareynslu í því að teikna skopmyndir og gerði þær fyrstu þegar ég sjálfur útskrifaðist úr menntaskóla fyrir rúmum 30 árum. Bæði hef ég teiknað nemendur fyrir útskrift en líka fólk á öllum aldri af öðrum tilefnum og má af slíkum nefna afmæli eða brúðkaup. Hér á síðunni má sjá nokkur dæmi um skopmyndir ásamt upplýsingum um hvernig hafa má samband við mig og/eða panta teikningar."
     ],
     galleryTitle: "Sýnishorn",
     contactTitle: "Hafa samband - pantanir",
-    contactInfo: "Sendu myndir og upplýsingar — ég reyni að svara innan tveggja sólahringa.",
-    faqTitle: "Spurt og svarað",
+    contactInfo: "Sendu myndir og upplýsingar — ég reyni að svara innan 48 klst.",
+    faqTitle: "Spurt og svarað"
   },
   pricing: [
     { min: 1, price: 25000 },
-    { min: 5, price: 23000 },
-    { min: 10, price: 21000 },
-    { min: 20, price: 20000 },
-  ],
-  gallery: [
-    "„Líklegastur til að týnast á skipi” — Nafn",
-    "„Umsögn/Lýsing.” — Nafn",
-    "„Umsögn/Lýsing.” — Nafn",
-    "„Umsögn/Lýsing.” — Nafn",
-    "„Umsögn/Lýsing.” — Nafn",
-    "„Umsögn/Lýsing.” — Nafn",
-    "„Umsögn/Lýsing.” — Nafn",
-    "„Umsögn/Lýsing.” — Nafn",
-    "„Umsögn/Lýsing.” — Nafn",
+    { min: 5, price: 23000 }
   ],
   faq: [
-    { q: "Í hvaða stærð eru myndirnar?", a: "A3..." },
-    { q: "Hvað tekur langan tíma að teikna hverja mynd?", a: "Yfirleitt tekur það um..." },
-    { q: "Er hægt að fá myndirnar í lit?", a: "Það fer eftir..." },
-  ],
+    { q: "Í hvaða stærð eru myndirnar?", a: "A3, 42 x 29,7 sm." },
+    { q: "Hvað tekur langan tíma að teikna hverja mynd?", a: `Það er breytilegt og fer eftir því hversu góð ljósmyndin er sem teikna skal eftir og hvort lýsingin á því sem á að vera á myndinni sé auðskiljanleg.
+
+      Þegar búið er að senda ljósmynd í tölvupósti til að teikna eftir og lýsingu á því sem á að vera á myndinni má reikna með tveimur eða þremur dögum í bið ef allt er í lagi og eins og það á að vera. Mikilvægt er að fylgja leiðbeiningum frá teiknara og hafa um fjögur til fimm atriði sem eiga að koma fram á teikningunni, í mesta lagi.
+
+Dæmi: <i>Jón Jónsson, er í eróbikki að hrópa ,,koma svo!”, svitinn skvettist af honum á tvær konur í æfingagöllum sem eru ósáttar á svip. Fyrir ofan Jón er borði sem stendur á ,,Fáránlega hress gaur!”.<i>
+` },
+    { q: "Er hægt að fá myndirnar í lit?", a: "Nei, það er því miður ekki hægt, þetta er blýantsteikning og teikningin er líka úðuð með fixatívi, þ.e. festiúða. " }
+  ]
 };
 
 /* =========================
@@ -163,24 +156,10 @@ function parseTextSections(txt) {
   return data;
 }
 
-async function loadContent() {
-  try {
-    const res = await fetch("text.txt", { cache: "no-store" });
-    if (!res.ok) throw new Error("text.txt not found");
-    const txt = await res.text();
-    const parsed = parseTextSections(txt);
 
-    // Merge on top of fallback to avoid missing keys breaking UI
-    return {
-      hero: { ...FALLBACK_CONTENT.hero, ...(parsed.hero || {}) },
-      pricing: (parsed.pricing && parsed.pricing.length) ? parsed.pricing : FALLBACK_CONTENT.pricing,
-      gallery: (parsed.gallery && parsed.gallery.length) ? parsed.gallery : FALLBACK_CONTENT.gallery,
-      faq: (parsed.faq && parsed.faq.length) ? parsed.faq : FALLBACK_CONTENT.faq,
-    };
-  } catch (e) {
-    console.warn("Using fallback content:", e);
-    return FALLBACK_CONTENT;
-  }
+// No async/dynamic loading, just return hardcoded text
+function loadContent() {
+  return SITE_TEXT;
 }
 
 /* =========================
@@ -244,7 +223,7 @@ function injectTextContent(data) {
       summary.textContent = item.q;
 
       const p = document.createElement("p");
-      p.textContent = item.a;
+      p.innerHTML = String(item.a).replace(/\n/g, "<br>");
 
       details.appendChild(summary);
       details.appendChild(p);
@@ -410,20 +389,67 @@ function setupActiveLinkSync() {
 
   const byId = (id) => links.find(a => a.getAttribute("href") === `#${id}`);
 
+  // Create underline bar and append to nav for correct stacking
+  let underline = document.createElement('div');
+  underline.className = 'nav-underline-bar';
+  underline.style.opacity = 0;
+  const nav = document.querySelector('.nav');
+  if (nav) nav.appendChild(underline);
+  else document.body.appendChild(underline);
+
+  function moveUnderlineTo(el) {
+    if (!el || !nav) { underline.style.opacity = 0; return; }
+
+    const rect = el.getBoundingClientRect();
+    const navRect = nav.getBoundingClientRect();
+
+    underline.style.width = rect.width + 'px';
+    underline.style.left = (rect.left - navRect.left) + 'px';
+    underline.style.opacity = 1;
+  }
+
+
+
+
   const io = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
       if (!entry.isIntersecting) return;
-      links.forEach((l) => l.classList.remove("active"));
+
+      // HERO → no underline
+      if (entry.target.id === "hero") {
+        links.forEach(l => l.classList.remove("active"));
+        underline.style.opacity = 0;
+        return;
+      }
+
+      // NORMAL SECTIONS
+      links.forEach(l => l.classList.remove("active"));
       const link = byId(entry.target.id);
-      if (link) link.classList.add("active");
+      if (link) {
+        link.classList.add("active");
+        moveUnderlineTo(link);
+      }
     });
   }, {
     root: null,
-    rootMargin: "0px 0px -55% 0px",
-    threshold: 0.2,
+    rootMargin: "-30% 0px -50% 0px",
+    threshold: 0.05,
   });
 
   sections.forEach((sec) => io.observe(sec));
+
+  // Also update underline on resize/scroll
+  window.addEventListener('resize', () => {
+    moveUnderlineTo(document.querySelector('.nav a.active'));
+  });
+  window.addEventListener('scroll', () => {
+    moveUnderlineTo(document.querySelector('.nav a.active'));
+  });
+
+  // Initial position
+  setTimeout(() => {
+    moveUnderlineTo(document.querySelector('.nav a.active'));
+  }, 100);
 }
 
 /* =========================
@@ -573,18 +599,18 @@ function setupYear() {
 /* =========================
    INIT
 ========================= */
-document.addEventListener("DOMContentLoaded", async () => {
+document.addEventListener("DOMContentLoaded", () => {
   setupYear();
   setupHamburger();
   setupActiveLinkSync();
   setupParallax();
 
-  // Load content + inject
-  const data = await loadContent();
+  // Inject hardcoded content
+  const data = loadContent();
   injectTextContent(data);
 
   // Pricing
-  PRICING_TIERS = (data.pricing && data.pricing.length) ? data.pricing : FALLBACK_CONTENT.pricing;
+  PRICING_TIERS = (data.pricing && data.pricing.length) ? data.pricing : [];
   setupQuantityControls();
   updateTotals();
 
