@@ -1,11 +1,10 @@
-/* h_app.js — rebuilt clean (no duplicates, no nested-scope bugs) */
+/* h_app.js — fixed + consolidated (single parallax, no missing functions) */
 
 /* =========================
    CONFIG
 ========================= */
 const CURRENCY = "kr."; // shown after the number (e.g. 25.000 kr.)
 
-// Content for the site
 const SITE_TEXT = {
   hero: {
     title: "Helgi Snær Sigurðsson",
@@ -24,13 +23,18 @@ const SITE_TEXT = {
   ],
   faq: [
     { q: "Í hvaða stærð eru myndirnar?", a: "A3, 42 x 29,7 sm." },
-    { q: "Hvað tekur langan tíma að teikna hverja mynd?", a: `Það er breytilegt og fer eftir því hversu góð ljósmyndin er sem teikna skal eftir og hvort lýsingin á því sem á að vera á myndinni sé auðskiljanleg.
+    {
+      q: "Hvað tekur langan tíma að teikna hverja mynd?",
+      a: `Það er breytilegt og fer eftir því hversu góð ljósmyndin er sem teikna skal eftir og hvort lýsingin á því sem á að vera á myndinni sé auðskiljanleg.
 
-      Þegar búið er að senda ljósmynd í tölvupósti til að teikna eftir og lýsingu á því sem á að vera á myndinni má reikna með tveimur eða þremur dögum í bið ef allt er í lagi og eins og það á að vera. Mikilvægt er að fylgja leiðbeiningum frá teiknara og hafa um fjögur til fimm atriði sem eiga að koma fram á teikningunni, í mesta lagi.
+Þegar búið er að senda ljósmynd í tölvupósti til að teikna eftir og lýsingu á því sem á að vera á myndinni má reikna með tveimur eða þremur dögum í bið ef allt er í lagi og eins og það á að vera. Mikilvægt er að fylgja leiðbeiningum frá teiknara og hafa um fjögur til fimm atriði sem eiga að koma fram á teikningunni, í mesta lagi.
 
-Dæmi: <i>Jón Jónsson, er í eróbikki að hrópa ,,koma svo!”, svitinn skvettist af honum á tvær konur í æfingagöllum sem eru ósáttar á svip. Fyrir ofan Jón er borði sem stendur á ,,Fáránlega hress gaur!”.<i>
-` },
-    { q: "Er hægt að fá myndirnar í lit?", a: "Nei, það er því miður ekki hægt, þetta er blýantsteikning og teikningin er líka úðuð með fixatívi, þ.e. festiúða. " }
+Dæmi: <i>Jón Jónsson, er í eróbikki að hrópa ,,koma svo!”, svitinn skvettist af honum á tvær konur í æfingagöllum sem eru ósáttar á svip. Fyrir ofan Jón er borði sem stendur á ,,Fáránlega hress gaur!”.</i>`
+    },
+    {
+      q: "Er hægt að fá myndirnar í lit?",
+      a: "Nei, það er því miður ekki hægt, þetta er blýantsteikning og teikningin er líka úðuð með fixatívi, þ.e. festiúða."
+    }
   ]
 };
 
@@ -53,6 +57,7 @@ function validEmail(s) {
 function showError(id, msg) {
   const el = document.querySelector(`.error[data-for="${id}"]`);
   const input = document.getElementById(id);
+
   if (el) {
     el.textContent = msg || "";
     el.style.display = msg ? "" : "none";
@@ -61,104 +66,10 @@ function showError(id, msg) {
 }
 
 /* =========================
-   TEXT.TXT PARSER
-   (matches your current text.txt format)
+  CONTENT LOADING
 ========================= */
-function parseTextSections(txt) {
-  const lines = txt.split(/\r?\n/);
-  let section = null;
-
-  const data = {
-    hero: { descriptions: [] },
-    gallery: [],
-    faq: [],
-    pricing: [],
-  };
-
-  let i = 0;
-
-  while (i < lines.length) {
-    const line = (lines[i] || "").trim();
-
-    // section headers
-    if (/^1[.)]/.test(line)) { section = "hero"; i++; continue; }
-    if (/^2[.)]/.test(line)) { section = "pricing"; i++; continue; }
-    if (/^3[.)]/.test(line) || line.startsWith("3. Sample Image Descriptions")) {
-      section = "gallery";
-      i++;
-      if ((lines[i] || "").trim() === "Undirtexti við hverja mynd") i++;
-      continue;
-    }
-    if (/^4[.)]/.test(line)) { section = "faq"; i++; continue; }
-
-    if (!section) { i++; continue; }
-
-    // HERO
-    if (section === "hero") {
-      if (line === "Hero Title") data.hero.title = (lines[++i] || "").trim();
-      else if (/^Hero Description \d+/.test(line)) data.hero.descriptions.push((lines[++i] || "").trim());
-      else if (line === "Gallery Section Title") data.hero.galleryTitle = (lines[++i] || "").trim();
-      else if (line === "Contact Section Title") data.hero.contactTitle = (lines[++i] || "").trim();
-      else if (line === "Contact Info Text") data.hero.contactInfo = (lines[++i] || "").trim();
-      else if (line === "FAQ Title") data.hero.faqTitle = (lines[++i] || "").trim();
-      i++;
-      continue;
-    }
-
-    // PRICING
-    if (section === "pricing") {
-      if (/^Quantity/.test(line)) {
-        i++;
-        while (i < lines.length && (lines[i] || "").trim()) {
-          const parts = lines[i].split(/\t+/).map(s => s.trim()).filter(Boolean);
-          if (parts.length >= 2) {
-            const min = parseInt(parts[0], 10);
-            const price = parseInt(parts[1], 10);
-            if (Number.isFinite(min) && Number.isFinite(price)) data.pricing.push({ min, price });
-          }
-          i++;
-        }
-      } else {
-        i++;
-      }
-      continue;
-    }
-
-    // GALLERY (expects "1. ..." lines)
-    if (section === "gallery") {
-      const m = line.match(/^\d+[.)]\s*(.+)$/);
-      if (m && m[1]) data.gallery.push(m[1].trim());
-      i++;
-      continue;
-    }
-
-    // FAQ
-    if (section === "faq") {
-      if (line === "Spurning") {
-        const q = (lines[++i] || "").trim();
-        if ((lines[++i] || "").trim() === "Svar") {
-          const a = (lines[++i] || "").trim();
-          if (q && a) data.faq.push({ q, a });
-        }
-        i++;
-        continue;
-      }
-      i++;
-      continue;
-    }
-
-    i++;
-  }
-
-  // fill missing hero arrays safely
-  if (!data.hero.descriptions) data.hero.descriptions = [];
-
-  return data;
-}
-
-
-// No async/dynamic loading, just return hardcoded text
 function loadContent() {
+  // No async/dynamic loading, just return hardcoded text
   return SITE_TEXT;
 }
 
@@ -176,6 +87,7 @@ function injectTextContent(data) {
     heroContent.querySelectorAll(".hero-sub").forEach((el) => el.remove());
     const h1 = heroContent.querySelector("h1");
     let after = h1;
+
     data.hero.descriptions.forEach((desc) => {
       const p = document.createElement("p");
       p.className = "lead hero-sub";
@@ -201,15 +113,7 @@ function injectTextContent(data) {
   const faqTitle = document.querySelector("#spurt-og-svarad .xl");
   if (faqTitle && data.hero?.faqTitle) faqTitle.textContent = data.hero.faqTitle;
 
-  // Gallery captions
-  const cards = document.querySelectorAll(".gallery .card");
-  cards.forEach((card, idx) => {
-    const cap = card.querySelector("figcaption");
-    if (!cap) return;
-    const v = data.gallery?.[idx];
-    cap.innerHTML = v ? v : "&nbsp;";
-    cap.style.display = "";
-  });
+  // No gallery captions or figcaption injection
 
   // FAQ items
   const faqWrap = document.querySelector("#spurt-og-svarad .wrap.narrow");
@@ -256,12 +160,14 @@ function renderTiers(activeQty) {
   for (let i = 0; i < tiers.length; ++i) {
     if (activeQty >= tiers[i].min) lastActiveIndex = i;
   }
+
   tiers.forEach((t, i) => {
     const row = document.createElement("div");
     let cls = "tier";
     if (i < lastActiveIndex) cls += " past";
     else if (i === lastActiveIndex) cls += " active";
     row.className = cls;
+
     row.innerHTML = `
       <span><strong>${t.min}+</strong> stk</span>
       <span class="badge">${formatMoney(t.price)}</span>
@@ -335,10 +241,7 @@ function setupImageModal() {
 
   closeBtn?.addEventListener("click", closeModal);
 
-  modal.addEventListener("click", (e) => {
-    const bg = modal.querySelector(".img-modal-bg");
-    if (e.target === modal || e.target === bg) closeModal();
-  });
+  // Only close when clicking the close button, not background or modal container
 
   document.addEventListener("keydown", (e) => {
     if (modal.style.display === "flex" && e.key === "Escape") closeModal();
@@ -384,76 +287,73 @@ function setupHamburger() {
 ========================= */
 function setupActiveLinkSync() {
   const links = Array.from(document.querySelectorAll('.nav a[href^="#"]'));
-  const sections = links.map(a => document.querySelector(a.getAttribute("href"))).filter(Boolean);
+  const sections = links
+    .map((a) => document.querySelector(a.getAttribute("href")))
+    .filter(Boolean);
+
   if (!sections.length) return;
 
-  const byId = (id) => links.find(a => a.getAttribute("href") === `#${id}`);
+  const byId = (id) => links.find((a) => a.getAttribute("href") === `#${id}`);
 
-  // Create underline bar and append to nav for correct stacking
-  let underline = document.createElement('div');
-  underline.className = 'nav-underline-bar';
+  // underline bar
+  const nav = document.querySelector(".nav");
+  if (!nav) return;
+
+  const underline = document.createElement("div");
+  underline.className = "nav-underline-bar";
   underline.style.opacity = 0;
-  const nav = document.querySelector('.nav');
-  if (nav) nav.appendChild(underline);
-  else document.body.appendChild(underline);
+  nav.appendChild(underline);
 
   function moveUnderlineTo(el) {
-    if (!el || !nav) { underline.style.opacity = 0; return; }
-
+    if (!el) {
+      underline.style.opacity = 0;
+      return;
+    }
     const rect = el.getBoundingClientRect();
     const navRect = nav.getBoundingClientRect();
-
-    underline.style.width = rect.width + 'px';
-    underline.style.left = (rect.left - navRect.left) + 'px';
+    underline.style.width = rect.width + "px";
+    underline.style.left = (rect.left - navRect.left) + "px";
     underline.style.opacity = 1;
   }
 
+  const io = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
 
+        // Hero: no underline
+        if (entry.target.id === "hero") {
+          links.forEach((l) => l.classList.remove("active"));
+          underline.style.opacity = 0;
+          return;
+        }
 
-
-  const io = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-      if (!entry.isIntersecting) return;
-
-      // HERO → no underline
-      if (entry.target.id === "hero") {
-        links.forEach(l => l.classList.remove("active"));
-        underline.style.opacity = 0;
-        return;
-      }
-
-      // NORMAL SECTIONS
-      links.forEach(l => l.classList.remove("active"));
-      const link = byId(entry.target.id);
-      if (link) {
-        link.classList.add("active");
-        moveUnderlineTo(link);
-      }
-    });
-  }, {
-    root: null,
-    rootMargin: "-30% 0px -50% 0px",
-    threshold: 0.05,
-  });
+        links.forEach((l) => l.classList.remove("active"));
+        const link = byId(entry.target.id);
+        if (link) {
+          link.classList.add("active");
+          moveUnderlineTo(link);
+        }
+      });
+    },
+    {
+      root: null,
+      rootMargin: "-30% 0px -50% 0px",
+      threshold: 0.05,
+    }
+  );
 
   sections.forEach((sec) => io.observe(sec));
 
-  // Also update underline on resize/scroll
-  window.addEventListener('resize', () => {
-    moveUnderlineTo(document.querySelector('.nav a.active'));
-  });
-  window.addEventListener('scroll', () => {
-    moveUnderlineTo(document.querySelector('.nav a.active'));
-  });
+  window.addEventListener("resize", () => moveUnderlineTo(document.querySelector(".nav a.active")), { passive: true });
+  window.addEventListener("scroll", () => moveUnderlineTo(document.querySelector(".nav a.active")), { passive: true });
 
-  // Initial position
-  setTimeout(() => {
-    moveUnderlineTo(document.querySelector('.nav a.active'));
-  }, 100);
+  setTimeout(() => moveUnderlineTo(document.querySelector(".nav a.active")), 100);
 }
 
 /* =========================
-   PARALLAX HERO
+   PARALLAX HERO (SINGLE, CLEAN)
+   Uses CSS var: --parallax-y
 ========================= */
 function setupParallax() {
   const img = document.querySelector(".hero-bg img");
@@ -463,25 +363,30 @@ function setupParallax() {
   const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   if (reduce) return;
 
-  let lastY = null;
-  const maxShift = 40;
+  let lastShift = null;
+  const maxShift = 500;
 
-  function onScroll() {
+  function updateParallax() {
     const rect = hero.getBoundingClientRect();
     if (rect.bottom < 0 || rect.top > window.innerHeight) return;
 
-    const progress = 1 - Math.min(Math.max((rect.top + rect.height) / (window.innerHeight + rect.height), 0), 1);
-    const shift = Math.round((progress - 0.5) * 2 * maxShift);
+    // 0..1 across hero visibility
+    const progress = 1 - Math.min(
+      Math.max((rect.top + rect.height) / (window.innerHeight + rect.height), 0),
+      1
+    );
 
-    if (shift === lastY) return;
-    lastY = shift;
+    const shift = Math.round((progress - 0.5) * 2 * maxShift);
+    if (shift === lastShift) return;
+    lastShift = shift;
+
+    // feed CSS transform: translate3d(0, var(--parallax-y), 0) scale(...)
     img.style.setProperty("--parallax-y", `${shift}px`);
   }
 
-  function loop() { onScroll(); requestAnimationFrame(loop); }
-  loop();
-
-  window.addEventListener("resize", onScroll, { passive: true });
+  window.addEventListener("scroll", updateParallax, { passive: true });
+  window.addEventListener("resize", updateParallax, { passive: true });
+  updateParallax();
 }
 
 /* =========================
@@ -513,7 +418,6 @@ function setupForm() {
     if (!validEmail(email)) { showError("email", "Vinsamlegast sláðu inn gilt netfang."); hasError = true; }
     else showError("email", "");
 
-    // allow 7–15 digits, ignore spaces/dashes
     const phoneDigits = phone.replace(/[^\d]/g, "");
     if (phoneDigits.length < 7 || phoneDigits.length > 15) {
       showError("phone", "Vinsamlegast sláðu inn gilt símanúmer.");
@@ -527,7 +431,6 @@ function setupForm() {
     updateTotals();
 
     const data = new FormData(form);
-    // normalize phone to digits only
     if (data.has("phone")) data.set("phone", phoneDigits);
 
     try {
@@ -547,13 +450,14 @@ function setupForm() {
 
       if (statusBox) {
         statusBox.hidden = false;
-        statusBox.textContent = "Takk fyrir! Ég reyni að staðfesta pöntunina og hafa samband við þig innan 48 klukkustunda.";
+        statusBox.textContent =
+          "Takk fyrir! Ég reyni að staðfesta pöntunina og hafa samband við þig innan 48 klukkustunda.";
         statusBox.style.background = "#f6fff8";
       }
     } catch (err) {
       if (statusBox) {
         statusBox.hidden = false;
-        statusBox.textContent = err.message || "Eitthvað fór úrskeiðis.";
+        statusBox.textContent = err?.message || "Eitthvað fór úrskeiðis.";
         statusBox.style.background = "#fff6f6";
       }
     }
@@ -568,7 +472,6 @@ function setupQuantityControls() {
   const quantityField = $("#quantity");
   if (!qtyInput) return;
 
-  // +/- buttons
   $$(".step").forEach((btn) => {
     btn.addEventListener("click", () => {
       const step = parseInt(btn.getAttribute("data-step") || "0", 10);
@@ -605,42 +508,39 @@ document.addEventListener("DOMContentLoaded", () => {
   setupActiveLinkSync();
   setupParallax();
 
-  // Inject hardcoded content
   const data = loadContent();
   injectTextContent(data);
 
-  // Pricing
   PRICING_TIERS = (data.pricing && data.pricing.length) ? data.pricing : [];
   setupQuantityControls();
   updateTotals();
 
-  // Modal + form
   setupImageModal();
   setupForm();
 
   // File upload preview for contact form
-  const photosInput = document.getElementById('photos');
-  const previewBox = document.getElementById('photoPreview');
+  const photosInput = document.getElementById("photos");
+  const previewBox = document.getElementById("photoPreview");
   if (photosInput && previewBox) {
-    photosInput.addEventListener('change', function() {
-      previewBox.innerHTML = '';
+    photosInput.addEventListener("change", function () {
+      previewBox.innerHTML = "";
       let files = Array.from(this.files || []);
       if (files.length > 10) {
         files = files.slice(0, 10);
-        alert('Þú getur aðeins valið allt að 10 myndir.');
+        alert("Þú getur aðeins valið allt að 10 myndir.");
       }
-      files.forEach(file => {
-        if (!file.type.startsWith('image/')) return;
+      files.forEach((file) => {
+        if (!file.type.startsWith("image/")) return;
         const reader = new FileReader();
-        reader.onload = function(e) {
-          const img = document.createElement('img');
+        reader.onload = function (e) {
+          const img = document.createElement("img");
           img.src = e.target.result;
           img.alt = file.name;
-          img.style.maxWidth = '72px';
-          img.style.maxHeight = '72px';
-          img.style.borderRadius = '8px';
-          img.style.objectFit = 'cover';
-          img.style.boxShadow = '0 2px 8px rgba(0,0,0,0.10)';
+          img.style.maxWidth = "72px";
+          img.style.maxHeight = "72px";
+          img.style.borderRadius = "8px";
+          img.style.objectFit = "cover";
+          img.style.boxShadow = "0 2px 8px rgba(0,0,0,0.10)";
           previewBox.appendChild(img);
         };
         reader.readAsDataURL(file);
