@@ -211,14 +211,32 @@ function setupImageModal() {
   if (!modal || !modalImg) return;
 
   const closeBtn = modal.querySelector(".img-modal-close");
+  const leftBtn = modal.querySelector(".img-modal-chevron-left");
+  const rightBtn = modal.querySelector(".img-modal-chevron-right");
   const galleryImgs = document.querySelectorAll(".gallery .card img");
+  if (!galleryImgs.length) {
+    console.warn("No gallery images found for modal setup.");
+    return;
+  }
 
-  function openModal(src, alt) {
+  let currentIdx = 0;
+
+  function showImage(idx) {
+    if (idx < 0) idx = galleryImgs.length - 1;
+    if (idx >= galleryImgs.length) idx = 0;
+    currentIdx = idx;
+    const img = galleryImgs[currentIdx];
+    modalImg.src = img.src;
+    modalImg.alt = img.alt || "";
+  }
+
+  function openModal(src, alt, idx) {
     modalImg.src = src;
     modalImg.alt = alt || "";
     modal.style.display = "flex";
     document.body.classList.add("modal-open");
     modal.focus();
+    if (typeof idx === "number") currentIdx = idx;
   }
 
   function closeModal() {
@@ -227,24 +245,33 @@ function setupImageModal() {
     document.body.classList.remove("modal-open");
   }
 
-  galleryImgs.forEach((img) => {
+  galleryImgs.forEach((img, idx) => {
     img.style.cursor = "zoom-in";
-    img.addEventListener("click", () => openModal(img.src, img.alt));
+    img.addEventListener("click", () => openModal(img.src, img.alt, idx));
     img.addEventListener("keydown", (e) => {
       if (e.key === "Enter" || e.key === " ") {
         e.preventDefault();
-        openModal(img.src, img.alt);
+        openModal(img.src, img.alt, idx);
       }
     });
     img.tabIndex = 0;
   });
 
+  leftBtn?.addEventListener("click", () => {
+    showImage(currentIdx - 1);
+  });
+  rightBtn?.addEventListener("click", () => {
+    showImage(currentIdx + 1);
+  });
+
   closeBtn?.addEventListener("click", closeModal);
 
-  // Only close when clicking the close button, not background or modal container
-
   document.addEventListener("keydown", (e) => {
-    if (modal.style.display === "flex" && e.key === "Escape") closeModal();
+    if (modal.style.display === "flex") {
+      if (e.key === "Escape") closeModal();
+      if (e.key === "ArrowLeft") showImage(currentIdx - 1);
+      if (e.key === "ArrowRight") showImage(currentIdx + 1);
+    }
   });
 }
 
