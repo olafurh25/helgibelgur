@@ -14,7 +14,7 @@ const SITE_TEXT = {
     ],
     galleryTitle: "Sýnishorn",
     contactTitle: "Hafa samband - pantanir",
-    contactInfo: "Sendu myndir og upplýsingar — ég reyni að svara innan 48 klst.",
+    contactInfo: "Sendu myndir og upplýsingar, ég reyni að svara innan tveggja sólahringa.",
     faqTitle: "Spurt og svarað"
   },
   pricing: [
@@ -256,6 +256,104 @@ function setupImageModal() {
     });
     img.tabIndex = 0;
   });
+
+  // Zoom only while holding mouse/touch
+  let zoomed = false;
+  let drag = { active: false, startX: 0, startY: 0, x: 0, y: 0 };
+  const container = modal.querySelector('.img-modal-content');
+
+  function setZoom(state) {
+    zoomed = state;
+    drag.x = 0;
+    drag.y = 0;
+    updateTransform();
+    if (zoomed) {
+      modalImg.style.cursor = "grab";
+    } else {
+      modalImg.style.cursor = "zoom-in";
+    }
+  }
+
+  function updateTransform() {
+    if (zoomed) {
+      modalImg.style.transform = `scale(2.7) translate(${drag.x}px, ${drag.y}px)`;
+    } else {
+      modalImg.style.transform = "scale(1) translate(0,0)";
+    }
+  }
+
+  // Mouse events: zoom only while holding
+  modalImg.addEventListener("mousedown", (e) => {
+    setZoom(true);
+    drag.active = true;
+    drag.startX = e.clientX - drag.x;
+    drag.startY = e.clientY - drag.y;
+    modalImg.style.cursor = "grabbing";
+    e.preventDefault();
+  });
+  window.addEventListener("mousemove", (e) => {
+    if (!drag.active || !zoomed) return;
+    drag.x = e.clientX - drag.startX;
+    drag.y = e.clientY - drag.startY;
+    // Clamp dragging to container bounds
+    const imgRect = modalImg.getBoundingClientRect();
+    const contRect = container.getBoundingClientRect();
+    const maxX = Math.max(0, (imgRect.width - contRect.width) / 2);
+    const maxY = Math.max(0, (imgRect.height - contRect.height) / 2);
+    drag.x = Math.max(-maxX, Math.min(maxX, drag.x));
+    drag.y = Math.max(-maxY, Math.min(maxY, drag.y));
+    updateTransform();
+  });
+  window.addEventListener("mouseup", () => {
+    if (drag.active || zoomed) {
+      drag.active = false;
+      setZoom(false);
+    }
+  });
+
+  // Touch support: zoom only while holding
+  modalImg.addEventListener("touchstart", (e) => {
+    if (!e.touches.length) return;
+    setZoom(true);
+    drag.active = true;
+    drag.startX = e.touches[0].clientX - drag.x;
+    drag.startY = e.touches[0].clientY - drag.y;
+    modalImg.style.cursor = "grabbing";
+    e.preventDefault();
+  }, { passive: false });
+  window.addEventListener("touchmove", (e) => {
+    if (!drag.active || !zoomed || !e.touches.length) return;
+    drag.x = e.touches[0].clientX - drag.startX;
+    drag.y = e.touches[0].clientY - drag.startY;
+    const imgRect = modalImg.getBoundingClientRect();
+    const contRect = container.getBoundingClientRect();
+    const maxX = Math.max(0, (imgRect.width - contRect.width) / 2);
+    const maxY = Math.max(0, (imgRect.height - contRect.height) / 2);
+    drag.x = Math.max(-maxX, Math.min(maxX, drag.x));
+    drag.y = Math.max(-maxY, Math.min(maxY, drag.y));
+    updateTransform();
+  }, { passive: false });
+  window.addEventListener("touchend", () => {
+    if (drag.active || zoomed) {
+      drag.active = false;
+      setZoom(false);
+    }
+  });
+
+  // Clicking outside the image (on modal background) exits zoom
+  modal.addEventListener("mousedown", (e) => {
+    if (zoomed && e.target === modal) {
+      setZoom(false);
+    }
+  });
+
+  // Reset zoom and drag when modal is opened or image is changed
+  function resetZoom() {
+    setZoom(false);
+  }
+  modal.addEventListener("transitionend", resetZoom);
+  leftBtn?.addEventListener("click", resetZoom);
+  rightBtn?.addEventListener("click", resetZoom);
 
   leftBtn?.addEventListener("click", () => {
     showImage(currentIdx - 1);
