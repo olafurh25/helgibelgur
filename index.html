@@ -12,7 +12,10 @@
   <a id="top" style="position:absolute;top:0;left:0;width:1px;height:1px;overflow:hidden;">&nbsp;</a>
   <a class="skip" href="#main">Fara beint í efni</a>
 
-  <!-- HEADER -->
+
+  <!-- MAIN SNAP CONTAINER -->
+  <main id="main" class="snap-container">
+    <!-- HEADER -->
   <header class="header" aria-label="Haus">
     <div class="wrap row spread">
       <a href="#top" class="logo-placeholder" aria-label="Forsíða" style="display:flex;align-items:center;text-decoration:none;">
@@ -49,10 +52,6 @@
       </span>
     </div>
   </header>
-
-  <!-- MAIN SNAP CONTAINER -->
-  <main id="main" class="snap-container">
-
     <!-- HERO (PARALLAX) -->
     <section id="hero" class="hero-parallax snap-section" aria-label="Hero">
       <div class="hero-bg" aria-hidden="true">
@@ -163,7 +162,6 @@
                 <span class="muted">Samtals</span>
                 <strong id="subtotal">—</strong>
               </div>
-              <p class="note small">Upplýsingar um hvert á að sækja.</p>
             </div>
           </div>
         </aside>
@@ -175,6 +173,7 @@
           <p class="muted small">Eða sendu beint á <a href="mailto:helgibelgur@gmail.com" class="link">helgibelgur@gmail.com</a></p>
 
           <form id="orderForm" action="https://formspree.io/f/xanvvrzd" method="POST" enctype="multipart/form-data" novalidate>
+
             <input type="hidden" name="service" value="Faunu teikning">
             <input type="hidden" name="einingarverd" id="unitPriceField">
             <input type="hidden" name="samtalsverd" id="subtotalField">
@@ -185,22 +184,21 @@
               <input id="name" name="name" required placeholder="Jóna Jónsdóttir">
               <span class="error" data-for="name"></span>
             </div>
-
             <div class="grid-2">
               <div class="field">
                 <label for="email">Netfang *</label>
                 <input id="email" name="email" type="email" required placeholder="jonajonsdottir@internet.is">
                 <span class="error" data-for="email"></span>
               </div>
-                <div class="field">
-                  <label for="phone">Símanúmer *</label>
-                  <input id="phone" name="phone" type="tel" pattern="[0-9]{7,15}" placeholder="1234567">
-                  <span class="error" data-for="phone" style="display:none;">Vinsamlegast sláðu inn gilt símanúmer.</span>
-                </div>
+              <div class="field">
+                <label for="phone">Símanúmer *</label>
+                <input id="phone" name="phone" type="tel" pattern="[0-9]{7,15}" placeholder="1234567">
+                <span class="error" data-for="phone" style="display:none;">Vinsamlegast sláðu inn gilt símanúmer.</span>
+              </div>
             </div>
 
             <div class="field">
-              <label for="quantity">Magn (tengt reiknivél)</label>
+              <label for="quantity">Magn (tengt verðskrá)</label>
               <input id="quantity" name="quantity" type="number" min="0" value="1">
             </div>
 

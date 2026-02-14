@@ -1,3 +1,41 @@
+// Collapse mobile header when not on hero/top
+function setupMobileHeaderCollapse() {
+  const hero = document.querySelector("#hero");
+  if (!hero) return;
+
+  const mq = window.matchMedia("(max-width: 768px)");
+
+  const apply = (isOnHero) => {
+    // Only collapse on mobile widths
+    if (!mq.matches) {
+      document.body.classList.remove("nav-collapsed");
+      return;
+    }
+    document.body.classList.toggle("nav-collapsed", !isOnHero);
+  };
+
+  const io = new IntersectionObserver(
+    (entries) => {
+      // "On hero" when hero is meaningfully visible
+      const entry = entries[0];
+      apply(entry.isIntersecting);
+    },
+    {
+      root: null,
+      threshold: 0.15, // tweak: higher means "must see more hero to count as top"
+    }
+  );
+
+  io.observe(hero);
+
+  // Re-evaluate when switching orientations / resizing
+  mq.addEventListener?.("change", () => {
+    // force a refresh by checking hero visibility
+    const rect = hero.getBoundingClientRect();
+    const isOnHero = rect.top < window.innerHeight && rect.bottom > 0;
+    apply(isOnHero);
+  });
+}
 /* h_app.js — fixed + consolidated (single parallax, no missing functions) */
 
 /* =========================
@@ -221,9 +259,186 @@ function setupImageModal() {
 
   let currentIdx = 0;
 
+
+  // --- Modal zoom/pan logic (register once) ---
+  (function setupModalZoomPan() {
+    const img = document.getElementById('img-modal-img');
+    if (!img) return;
+
+    let lastScale = 1;
+    let startDistance = 0;
+    let currentScale = 1;
+    let origin = { x: 0, y: 0 };
+    let lastOrigin = { x: 0, y: 0 };
+    let isPinching = false;
+
+    // Desktop scroll-to-zoom and pan
+    let isDragging = false;
+    let dragStart = { x: 0, y: 0 };
+    let imgOffset = { x: 0, y: 0 };
+    let panOffset = { x: 0, y: 0 };
+
+    function setDesktopTransform(scale, offset) {
+      img.style.transformOrigin = `center center`;
+      img.style.transform = `scale(${scale}) translate(${offset.x / scale}px, ${offset.y / scale}px)`;
+    }
+
+    // Scroll to zoom (desktop only, always centered)
+    img.addEventListener('wheel', (e) => {
+      if (e.ctrlKey || e.pointerType === 'touch') return; // ignore pinch-zoom gesture
+      e.preventDefault();
+      let scaleDelta = e.deltaY < 0 ? 1.15 : 0.87;
+      let newScale = Math.max(1, Math.min(4, currentScale * scaleDelta));
+      if (newScale !== currentScale) {
+        // Always center zoom on container
+        panOffset.x = 0;
+        panOffset.y = 0;
+        currentScale = newScale;
+        lastScale = newScale;
+        setDesktopTransform(currentScale, panOffset);
+      }
+    }, { passive: false });
+
+    // Click and drag to pan (when zoomed)
+    img.addEventListener('mousedown', (e) => {
+      if (currentScale === 1) return;
+      isDragging = true;
+      dragStart = { x: e.clientX, y: e.clientY };
+      imgOffset = { ...panOffset };
+      img.style.cursor = 'grabbing';
+      e.preventDefault();
+    });
+
+    window.addEventListener('mousemove', (e) => {
+      if (!isDragging) return;
+      panOffset.x = imgOffset.x + (e.clientX - dragStart.x);
+      panOffset.y = imgOffset.y + (e.clientY - dragStart.y);
+      setDesktopTransform(currentScale, panOffset);
+    });
+
+    window.addEventListener('mouseup', () => {
+      if (isDragging) {
+        isDragging = false;
+        img.style.cursor = currentScale > 1 ? 'grab' : '';
+      }
+    });
+
+    img.addEventListener('mouseleave', () => {
+      if (isDragging) {
+        isDragging = false;
+        img.style.cursor = currentScale > 1 ? 'grab' : '';
+      }
+    });
+
+    // Change cursor on zoom
+    img.addEventListener('mousemove', () => {
+      img.style.cursor = currentScale > 1 ? (isDragging ? 'grabbing' : 'grab') : '';
+    });
+
+    // Reset pan/zoom on modal close
+    function resetZoomPan() {
+      currentScale = 1;
+      lastScale = 1;
+      panOffset = { x: 0, y: 0 };
+      setDesktopTransform(1, { x: 0, y: 0 });
+      img.style.cursor = '';
+    }
+
+    // Reset zoom when modal closes
+    if (closeBtn) {
+      closeBtn.addEventListener('click', resetZoomPan);
+    }
+
+    // Also reset on modal background click and close modal
+    const modalBg = document.querySelector('.img-modal-bg');
+    if (modalBg) {
+      modalBg.addEventListener('click', function() {
+        resetZoomPan && resetZoomPan();
+        closeModal();
+      });
+    }
+
+    // Integrate with mobile pinch-to-zoom
+    function setTransform(scale, origin) {
+      // If desktop, use pan/zoom
+      if (window.matchMedia('(pointer: fine)').matches) {
+        setDesktopTransform(scale, panOffset);
+      } else {
+        img.style.transformOrigin = `${origin.x}px ${origin.y}px`;
+        img.style.transform = `scale(${scale})`;
+      }
+    }
+
+    function getDistance(t1, t2) {
+      const dx = t2.clientX - t1.clientX;
+      const dy = t2.clientY - t1.clientY;
+      return Math.sqrt(dx * dx + dy * dy);
+    }
+
+    function getMidpoint(t1, t2) {
+      return {
+        x: (t1.clientX + t2.clientX) / 2,
+        y: (t1.clientY + t2.clientY) / 2
+      };
+    }
+
+    img.addEventListener('pointerdown', (e) => {
+      if (e.pointerType !== 'touch') return;
+      img.setPointerCapture(e.pointerId);
+    });
+
+    let pointers = [];
+
+    img.addEventListener('pointermove', (e) => {
+      if (e.pointerType !== 'touch') return;
+      pointers = pointers.filter(p => p.pointerId !== e.pointerId);
+      pointers.push(e);
+      if (pointers.length === 2) {
+        isPinching = true;
+        const [t1, t2] = pointers;
+        const dist = getDistance(t1, t2);
+        if (!startDistance) {
+          startDistance = dist;
+          lastOrigin = getMidpoint(t1, t2);
+        }
+        currentScale = Math.max(1, Math.min(4, lastScale * (dist / startDistance)));
+        origin = getMidpoint(t1, t2);
+        setTransform(currentScale, origin);
+      }
+    });
+
+    img.addEventListener('pointerup', (e) => {
+      pointers = pointers.filter(p => p.pointerId !== e.pointerId);
+      if (isPinching && pointers.length < 2) {
+        lastScale = currentScale;
+        startDistance = 0;
+        isPinching = false;
+      }
+      if (pointers.length === 0 && currentScale !== 1) {
+        // Optional: snap back to 1x after pinch ends
+        setTimeout(() => {
+          currentScale = 1;
+          lastScale = 1;
+          setTransform(1, { x: img.width / 2, y: img.height / 2 });
+        }, 200);
+      }
+    });
+
+    img.addEventListener('pointercancel', (e) => {
+      pointers = pointers.filter(p => p.pointerId !== e.pointerId);
+      if (pointers.length < 2) {
+        lastScale = currentScale;
+        startDistance = 0;
+        isPinching = false;
+      }
+    });
+
+    img.addEventListener('pointerout', (e) => {
+      pointers = pointers.filter(p => p.pointerId !== e.pointerId);
+    });
+  })();
+
   function showImage(idx) {
-    if (idx < 0) idx = galleryImgs.length - 1;
-    if (idx >= galleryImgs.length) idx = 0;
     currentIdx = idx;
     const img = galleryImgs[currentIdx];
     modalImg.src = img.src;
@@ -257,88 +472,8 @@ function setupImageModal() {
     img.tabIndex = 0;
   });
 
-  // Zoom only while holding mouse/touch
-  let zoomed = false;
-  let drag = { active: false, startX: 0, startY: 0, x: 0, y: 0 };
-  const container = modal.querySelector('.img-modal-content');
-
-  function setZoom(state) {
-    zoomed = state;
-    drag.x = 0;
-    drag.y = 0;
-    updateTransform();
-    if (zoomed) {
-      modalImg.style.cursor = "grab";
-    } else {
-      modalImg.style.cursor = "zoom-in";
-    }
-  }
-
-  function updateTransform() {
-    if (zoomed) {
-      modalImg.style.transform = `scale(2.7) translate(${drag.x}px, ${drag.y}px)`;
-    } else {
-      modalImg.style.transform = "scale(1) translate(0,0)";
-    }
-  }
-
-  // Mouse events: zoom only while holding
-  modalImg.addEventListener("mousedown", (e) => {
-    setZoom(true);
-    drag.active = true;
-    drag.startX = e.clientX - drag.x;
-    drag.startY = e.clientY - drag.y;
-    modalImg.style.cursor = "grabbing";
-    e.preventDefault();
-  });
-  window.addEventListener("mousemove", (e) => {
-    if (!drag.active || !zoomed) return;
-    drag.x = e.clientX - drag.startX;
-    drag.y = e.clientY - drag.startY;
-    // Clamp dragging to container bounds
-    const imgRect = modalImg.getBoundingClientRect();
-    const contRect = container.getBoundingClientRect();
-    const maxX = Math.max(0, (imgRect.width - contRect.width) / 2);
-    const maxY = Math.max(0, (imgRect.height - contRect.height) / 2);
-    drag.x = Math.max(-maxX, Math.min(maxX, drag.x));
-    drag.y = Math.max(-maxY, Math.min(maxY, drag.y));
-    updateTransform();
-  });
-  window.addEventListener("mouseup", () => {
-    if (drag.active || zoomed) {
-      drag.active = false;
-      setZoom(false);
-    }
-  });
-
-  // Touch support: zoom only while holding
-  modalImg.addEventListener("touchstart", (e) => {
-    if (!e.touches.length) return;
-    setZoom(true);
-    drag.active = true;
-    drag.startX = e.touches[0].clientX - drag.x;
-    drag.startY = e.touches[0].clientY - drag.y;
-    modalImg.style.cursor = "grabbing";
-    e.preventDefault();
-  }, { passive: false });
-  window.addEventListener("touchmove", (e) => {
-    if (!drag.active || !zoomed || !e.touches.length) return;
-    drag.x = e.touches[0].clientX - drag.startX;
-    drag.y = e.touches[0].clientY - drag.startY;
-    const imgRect = modalImg.getBoundingClientRect();
-    const contRect = container.getBoundingClientRect();
-    const maxX = Math.max(0, (imgRect.width - contRect.width) / 2);
-    const maxY = Math.max(0, (imgRect.height - contRect.height) / 2);
-    drag.x = Math.max(-maxX, Math.min(maxX, drag.x));
-    drag.y = Math.max(-maxY, Math.min(maxY, drag.y));
-    updateTransform();
-  }, { passive: false });
-  window.addEventListener("touchend", () => {
-    if (drag.active || zoomed) {
-      drag.active = false;
-      setZoom(false);
-    }
-  });
+  // Remove zoom/drag/transform logic: modal images are static only
+  modalImg.style.cursor = "default";
 
   // Clicking outside the image (on modal background) exits zoom
   modal.addEventListener("mousedown", (e) => {
@@ -672,4 +807,5 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     });
   }
+  setupMobileHeaderCollapse();
 });
