@@ -540,6 +540,23 @@ function setupHamburger() {
       document.body.style.overflow = "";
     }
   });
+
+  // Close menu when clicking anywhere outside nav + hamburger
+  document.addEventListener("click", (e) => {
+    const isOpen = nav.classList.contains("active");
+    if (!isOpen) return;
+
+    const clickedInsideNav = nav.contains(e.target);
+    const clickedHamburger = hamburger.contains(e.target);
+
+    if (!clickedInsideNav && !clickedHamburger) {
+      nav.classList.remove("active");
+      hamburger.classList.remove("active");
+      hamburger.setAttribute("aria-expanded", "false");
+      document.body.style.overflow = "";
+    }
+  });
+
 }
 
 /* =========================
