@@ -57,7 +57,7 @@ const SITE_TEXT = {
   },
   pricing: [
     { min: 1, price: 25000 },
-    { min: 5, price: 23000 }
+    { min: 5, price: 20000 }
   ],
   faq: [
     { q: "Í hvaða stærð eru myndirnar?", a: "A3, 42 x 29,7 sm." },
