@@ -414,14 +414,6 @@ function setupImageModal() {
         startDistance = 0;
         isPinching = false;
       }
-      if (pointers.length === 0 && currentScale !== 1) {
-        // Optional: snap back to 1x after pinch ends
-        setTimeout(() => {
-          currentScale = 1;
-          lastScale = 1;
-          setTransform(1, { x: img.width / 2, y: img.height / 2 });
-        }, 200);
-      }
     });
 
     img.addEventListener('pointercancel', (e) => {
@@ -472,23 +464,7 @@ function setupImageModal() {
     img.tabIndex = 0;
   });
 
-  // Remove zoom/drag/transform logic: modal images are static only
-  modalImg.style.cursor = "default";
-
-  // Clicking outside the image (on modal background) exits zoom
-  modal.addEventListener("mousedown", (e) => {
-    if (zoomed && e.target === modal) {
-      setZoom(false);
-    }
-  });
-
-  // Reset zoom and drag when modal is opened or image is changed
-  function resetZoom() {
-    setZoom(false);
-  }
-  modal.addEventListener("transitionend", resetZoom);
-  leftBtn?.addEventListener("click", resetZoom);
-  rightBtn?.addEventListener("click", resetZoom);
+  // Enable pan/zoom for modal images (do not force cursor to default)
 
   leftBtn?.addEventListener("click", () => {
     showImage(currentIdx - 1);
@@ -795,21 +771,19 @@ document.addEventListener("DOMContentLoaded", () => {
   setupImageModal();
   setupForm();
 
-  // File upload preview for contact form
+  // File upload preview for contact form with remove option
   const photosInput = document.getElementById("photos");
   const previewBox = document.getElementById("photoPreview");
+  let selectedFiles = [];
   if (photosInput && previewBox) {
-    photosInput.addEventListener("change", function () {
+    function renderPreview() {
       previewBox.innerHTML = "";
-      let files = Array.from(this.files || []);
-      if (files.length > 10) {
-        files = files.slice(0, 10);
-        alert("Þú getur aðeins valið allt að 10 myndir.");
-      }
-      files.forEach((file) => {
-        if (!file.type.startsWith("image/")) return;
+      selectedFiles.forEach((file, idx) => {
         const reader = new FileReader();
         reader.onload = function (e) {
+          const wrapper = document.createElement("div");
+          wrapper.style.position = "relative";
+          wrapper.style.display = "inline-block";
           const img = document.createElement("img");
           img.src = e.target.result;
           img.alt = file.name;
@@ -818,10 +792,61 @@ document.addEventListener("DOMContentLoaded", () => {
           img.style.borderRadius = "8px";
           img.style.objectFit = "cover";
           img.style.boxShadow = "0 2px 8px rgba(0,0,0,0.10)";
-          previewBox.appendChild(img);
+          // Remove button
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.textContent = "×";
+          btn.title = "Fjarlægja mynd";
+          btn.style.position = "absolute";
+          btn.style.top = "-8px";
+          btn.style.right = "-8px";
+          btn.style.background = "#fff";
+          btn.style.border = "1px solid #ccc";
+          btn.style.borderRadius = "50%";
+          btn.style.width = "22px";
+          btn.style.height = "22px";
+          btn.style.cursor = "pointer";
+          btn.style.fontWeight = "bold";
+          btn.style.color = "#333";
+          btn.style.boxShadow = "0 1px 4px rgba(0,0,0,0.10)";
+          btn.addEventListener("click", function () {
+            selectedFiles.splice(idx, 1);
+            updateInputFiles();
+            renderPreview();
+          });
+          wrapper.appendChild(img);
+          wrapper.appendChild(btn);
+          previewBox.appendChild(wrapper);
         };
         reader.readAsDataURL(file);
       });
+    }
+
+    function updateInputFiles() {
+      // Create a new DataTransfer to update the input's files
+      const dt = new DataTransfer();
+      selectedFiles.forEach(f => dt.items.add(f));
+      photosInput.files = dt.files;
+    }
+
+    photosInput.addEventListener("change", function () {
+      let files = Array.from(this.files || []);
+      if (files.length > 10) {
+        files = files.slice(0, 10);
+        alert("Þú getur aðeins valið allt að 10 myndir.");
+      }
+      // Add new files, avoiding duplicates by name+size
+      files.forEach(file => {
+        if (!file.type.startsWith("image/")) return;
+        if (!selectedFiles.some(f => f.name === file.name && f.size === file.size)) {
+          selectedFiles.push(file);
+        }
+      });
+      if (selectedFiles.length > 10) {
+        selectedFiles = selectedFiles.slice(0, 10);
+      }
+      updateInputFiles();
+      renderPreview();
     });
   }
   setupMobileHeaderCollapse();
