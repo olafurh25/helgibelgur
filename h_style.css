@@ -525,6 +525,16 @@ details.faq p {
 /* Mobile hero adjustments */
 @media(max-width:768px){
   .hero-content{gap:12px}
+@media (max-width: 1050px) {
+  .hero-bg img {
+    filter: saturate(0.95) contrast(1.05) brightness(0.7);
+  }
+  .hero-overlay {
+    background:
+      linear-gradient(90deg, rgba(0,0,0,.70) 0%, rgba(0,0,0,.50) 40%, rgba(0,0,0,.15) 70%),
+      radial-gradient(120% 120% at 0% 0%, rgba(0,0,0,.45), transparent 60%);
+  }
+}
   .hero-content .xxl{font-size:clamp(32px,9vw,48px)}
   .hero-sub{font-size:1rem; max-width:90%}
   .hero-parallax{min-height:clamp(60vh,70vh,80vh)}

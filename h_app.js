@@ -72,6 +72,17 @@ Dæmi: <i>Jón Jónsson, er í eróbikki að hrópa ,,koma svo!”, svitinn skve
     {
       q: "Er hægt að fá myndirnar í lit?",
       a: "Nei, það er því miður ekki hægt, þetta er blýantsteikning og teikningin er líka úðuð með fixatívi, þ.e. festiúða."
+    },
+    {
+      q: "Er hægt að láta teikna eftir hvernig mynd sem er?",
+      a: "Nei, ljósmyndin þarf að vera með hárri upplausn og í fókus. Góð leið til að sjá hvort hún er nógu góð er að þysja (e. zoom) inn í myndina og ef hún helst í fókus þá er upplausnin nægilega mikil. Ef myndin verður óskýr þá er upplausnin ekki nógu góð."
+    },
+    {
+      q: "Hversu miklar upplýsingar þurfa að vera í lýsingu á því sem á að vera á teikningunni?",
+      a: `Það er gott að nefna fjögur eða fimm atriði. Ef of mikið er í lýsingunni er hætt við að það komist ekki allt fyrir á teikningunni.
+
+Dæmi: <i>Jón Jónsson, er í eróbikki að hrópa ,,koma svo!”, svitinn skvettist af honum á tvær konur í æfingagöllum sem eru ósáttar á svip. Fyrir ofan Jón er borði sem stendur á ,,Fáránlega hress gaur!”.</i>`
+
     }
   ]
 };
