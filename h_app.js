@@ -244,6 +244,7 @@ function updateTotals() {
    IMAGE MODAL
 ========================= */
 function setupImageModal() {
+  let scrollY = 0;
   const modal = $("#img-modal");
   const modalImg = $("#img-modal-img");
   if (!modal || !modalImg) return;
@@ -438,19 +439,41 @@ function setupImageModal() {
   }
 
   function openModal(src, alt, idx) {
-    modalImg.src = src;
-    modalImg.alt = alt || "";
-    modal.style.display = "flex";
-    document.body.classList.add("modal-open");
-    modal.focus();
-    if (typeof idx === "number") currentIdx = idx;
-  }
+  modalImg.src = src;
+  modalImg.alt = alt || "";
 
-  function closeModal() {
-    modal.style.display = "none";
-    modalImg.src = "";
-    document.body.classList.remove("modal-open");
-  }
+  scrollY = window.scrollY;
+
+  modal.style.display = "flex";
+  document.body.classList.add("modal-open");
+
+  // hard lock scroll
+  document.body.style.position = "fixed";
+  document.body.style.top = `-${scrollY}px`;
+  document.body.style.left = "0";
+  document.body.style.right = "0";
+  document.body.style.width = "100%";
+
+  modal.focus();
+  if (typeof idx === "number") currentIdx = idx;
+}
+
+function closeModal() {
+  modal.style.display = "none";
+  modalImg.src = "";
+
+  document.body.classList.remove("modal-open");
+
+  // unlock scroll + restore position
+  document.body.style.position = "";
+  document.body.style.top = "";
+  document.body.style.left = "";
+  document.body.style.right = "";
+  document.body.style.width = "";
+
+  window.scrollTo(0, scrollY);
+}
+
 
   galleryImgs.forEach((img, idx) => {
     img.style.cursor = "zoom-in";
